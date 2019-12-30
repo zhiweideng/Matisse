@@ -82,6 +82,7 @@ public class SampleActivity extends AppCompatActivity implements View.OnClickLis
                                             .choose(MimeType.ofAll(), false)
                                             .countable(true)
                                             .capture(true)
+                                            .invitePhotoDraft(true)
                                             .captureStrategy(
                                                     new CaptureStrategy(true, "com.zhihu.matisse.sample.fileprovider","test"))
                                             .maxSelectable(9)
@@ -116,6 +117,7 @@ public class SampleActivity extends AppCompatActivity implements View.OnClickLis
                                 case R.id.dracula:
                                     Matisse.from(SampleActivity.this)
                                             .choose(MimeType.ofImage())
+                                            .invitePhotoDraft(true)
                                             .theme(R.style.Matisse_Dracula)
                                             .countable(false)
                                             .addFilter(new GifSizeFilter(320, 320, 5 * Filter.K * Filter.K))
@@ -151,8 +153,12 @@ public class SampleActivity extends AppCompatActivity implements View.OnClickLis
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE_CHOOSE && resultCode == RESULT_OK) {
-            mAdapter.setData(Matisse.obtainResult(data), Matisse.obtainPathResult(data));
-            Log.e("OnActivityResult ", String.valueOf(Matisse.obtainOriginalState(data)));
+            boolean obtainInvitePhotoDraftResult = Matisse.obtainInvitePhotoDraftResult(data);
+            Log.e("--tag--","----asdf---"+obtainInvitePhotoDraftResult);
+            if (!obtainInvitePhotoDraftResult) {
+                mAdapter.setData(Matisse.obtainResult(data), Matisse.obtainPathResult(data));
+                Log.e("OnActivityResult ", String.valueOf(Matisse.obtainOriginalState(data)));
+            }
         }
     }
 
