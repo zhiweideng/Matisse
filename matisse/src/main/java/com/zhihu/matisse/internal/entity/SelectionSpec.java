@@ -44,6 +44,7 @@ public final class SelectionSpec {
     public int maxVideoSelectable;
     public List<Filter> filters;
     public boolean capture;
+    public boolean invitePhotoDraft;
     public CaptureStrategy captureStrategy;
     public int spanCount;
     public int gridExpectedSize;

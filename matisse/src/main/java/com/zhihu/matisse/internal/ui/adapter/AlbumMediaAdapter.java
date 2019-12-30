@@ -42,7 +42,8 @@ public class AlbumMediaAdapter extends
         MediaGrid.OnMediaGridClickListener {
 
     private static final int VIEW_TYPE_CAPTURE = 0x01;
-    private static final int VIEW_TYPE_MEDIA = 0x02;
+    private static final int VIEW_TYPE_INVITE_PHOTO_DRAFT = 0x02;
+    private static final int VIEW_TYPE_MEDIA = 0x03;
     private final SelectedItemCollection mSelectedCollection;
     private final Drawable mPlaceholder;
     private SelectionSpec mSelectionSpec;
@@ -73,6 +74,18 @@ public class AlbumMediaAdapter extends
                 public void onClick(View v) {
                     if (v.getContext() instanceof OnPhotoCapture) {
                         ((OnPhotoCapture) v.getContext()).capture();
+                    }
+                }
+            });
+            return holder;
+        } else if (viewType == VIEW_TYPE_INVITE_PHOTO_DRAFT) {
+            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.invite_photo_draft, parent, false);
+            InvitePhotoDraftViewHolder holder = new InvitePhotoDraftViewHolder(v);
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (v.getContext() instanceof OnInvitePhotoDraft) {
+                        ((OnInvitePhotoDraft) v.getContext()).invitePhotoDraft();
                     }
                 }
             });
@@ -199,7 +212,14 @@ public class AlbumMediaAdapter extends
 
     @Override
     public int getItemViewType(int position, Cursor cursor) {
-        return Item.valueOf(cursor).isCapture() ? VIEW_TYPE_CAPTURE : VIEW_TYPE_MEDIA;
+        Item item = Item.valueOf(cursor);
+        if (item.isCapture()) {
+            return VIEW_TYPE_CAPTURE;
+        } else if (item.isInvitePhotoDraft()) {
+            return VIEW_TYPE_INVITE_PHOTO_DRAFT;
+        } else {
+            return VIEW_TYPE_MEDIA;
+        }
     }
 
     private boolean assertAddSelection(Context context, Item item) {
@@ -268,6 +288,10 @@ public class AlbumMediaAdapter extends
         void capture();
     }
 
+    public interface OnInvitePhotoDraft {
+        void invitePhotoDraft();
+    }
+
     private static class MediaViewHolder extends RecyclerView.ViewHolder {
 
         private MediaGrid mMediaGrid;
@@ -289,4 +313,9 @@ public class AlbumMediaAdapter extends
         }
     }
 
+    private static class InvitePhotoDraftViewHolder extends RecyclerView.ViewHolder {
+        public InvitePhotoDraftViewHolder(View itemView) {
+            super(itemView);
+        }
+    }
 }

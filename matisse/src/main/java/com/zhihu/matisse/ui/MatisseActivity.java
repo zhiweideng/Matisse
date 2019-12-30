@@ -31,6 +31,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -66,11 +67,12 @@ public class MatisseActivity extends AppCompatActivity implements
         AlbumCollection.AlbumCallbacks, AdapterView.OnItemSelectedListener,
         MediaSelectionFragment.SelectionProvider, View.OnClickListener,
         AlbumMediaAdapter.CheckStateListener, AlbumMediaAdapter.OnMediaClickListener,
-        AlbumMediaAdapter.OnPhotoCapture {
+        AlbumMediaAdapter.OnPhotoCapture, AlbumMediaAdapter.OnInvitePhotoDraft {
 
     public static final String EXTRA_RESULT_SELECTION = "extra_result_selection";
     public static final String EXTRA_RESULT_SELECTION_PATH = "extra_result_selection_path";
     public static final String EXTRA_RESULT_ORIGINAL_ENABLE = "extra_result_original_enable";
+    public static final String RESULT_INVITE_PHOTO_DRAFT = "result_invite_photo_draft_call_back";
     private static final int REQUEST_CODE_PREVIEW = 23;
     private static final int REQUEST_CODE_CAPTURE = 24;
     public static final String CHECK_STATE = "checkState";
@@ -425,4 +427,11 @@ public class MatisseActivity extends AppCompatActivity implements
         }
     }
 
+    @Override
+    public void invitePhotoDraft() {
+        Intent intent = new Intent();
+        intent.putExtra(RESULT_INVITE_PHOTO_DRAFT, true);
+        setResult(Activity.RESULT_OK, intent);
+        finish();
+    }
 }

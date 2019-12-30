@@ -34,6 +34,7 @@ public class AlbumMediaCollection implements LoaderManager.LoaderCallbacks<Curso
     private static final int LOADER_ID = 2;
     private static final String ARGS_ALBUM = "args_album";
     private static final String ARGS_ENABLE_CAPTURE = "args_enable_capture";
+    private static final String ARGS_ENABLE_INVITE_PHOTO_DRAFT = "args_enable_invite_photo_draft";
     private WeakReference<Context> mContext;
     private LoaderManager mLoaderManager;
     private AlbumMediaCallbacks mCallbacks;
@@ -51,7 +52,8 @@ public class AlbumMediaCollection implements LoaderManager.LoaderCallbacks<Curso
         }
 
         return AlbumMediaLoader.newInstance(context, album,
-                album.isAll() && args.getBoolean(ARGS_ENABLE_CAPTURE, false));
+                album.isAll() && args.getBoolean(ARGS_ENABLE_CAPTURE, false),
+                album.isAll() && args.getBoolean(ARGS_ENABLE_INVITE_PHOTO_DRAFT, false));
     }
 
     @Override
@@ -88,13 +90,14 @@ public class AlbumMediaCollection implements LoaderManager.LoaderCallbacks<Curso
     }
 
     public void load(@Nullable Album target) {
-        load(target, false);
+        load(target, false, false);
     }
 
-    public void load(@Nullable Album target, boolean enableCapture) {
+    public void load(@Nullable Album target, boolean enableCapture, boolean enableInvitePhotoDraft) {
         Bundle args = new Bundle();
         args.putParcelable(ARGS_ALBUM, target);
         args.putBoolean(ARGS_ENABLE_CAPTURE, enableCapture);
+        args.putBoolean(ARGS_ENABLE_INVITE_PHOTO_DRAFT, enableInvitePhotoDraft);
         mLoaderManager.initLoader(LOADER_ID, args, this);
     }
 

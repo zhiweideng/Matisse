@@ -95,16 +95,19 @@ public class AlbumMediaLoader extends CursorLoader {
 
     private static final String ORDER_BY = MediaStore.Images.Media.DATE_ADDED + " DESC";
     private final boolean mEnableCapture;
+    private final boolean mEnableInvitePhotoDraft;
 
-    private AlbumMediaLoader(Context context, String selection, String[] selectionArgs, boolean capture) {
+    private AlbumMediaLoader(Context context, String selection, String[] selectionArgs, boolean capture, boolean invitePhotoDraft) {
         super(context, QUERY_URI, PROJECTION, selection, selectionArgs, ORDER_BY);
         mEnableCapture = capture;
+        mEnableInvitePhotoDraft = invitePhotoDraft;
     }
 
-    public static CursorLoader newInstance(Context context, Album album, boolean capture) {
+    public static CursorLoader newInstance(Context context, Album album, boolean capture, boolean invitePhotoDraft) {
         String selection;
         String[] selectionArgs;
         boolean enableCapture;
+        boolean enableInvitePhotoDraft;
 
         if (album.isAll()) {
             if (SelectionSpec.getInstance().onlyShowImages()) {
@@ -118,6 +121,7 @@ public class AlbumMediaLoader extends CursorLoader {
                 selectionArgs = SELECTION_ALL_ARGS;
             }
             enableCapture = capture;
+            enableInvitePhotoDraft = invitePhotoDraft;
         } else {
             if (SelectionSpec.getInstance().onlyShowImages()) {
                 selection = SELECTION_ALBUM_FOR_SINGLE_MEDIA_TYPE;
@@ -132,19 +136,34 @@ public class AlbumMediaLoader extends CursorLoader {
                 selectionArgs = getSelectionAlbumArgs(album.getId());
             }
             enableCapture = false;
+            enableInvitePhotoDraft = false;
         }
-        return new AlbumMediaLoader(context, selection, selectionArgs, enableCapture);
+        return new AlbumMediaLoader(context, selection, selectionArgs, enableCapture, enableInvitePhotoDraft);
     }
 
     @Override
     public Cursor loadInBackground() {
         Cursor result = super.loadInBackground();
-        if (!mEnableCapture || !MediaStoreCompat.hasCameraFeature(getContext())) {
-            return result;
+        MatrixCursor dummy = null;
+
+        if (mEnableCapture && MediaStoreCompat.hasCameraFeature(getContext())) {
+            dummy = new MatrixCursor(PROJECTION);
+            dummy.addRow(new Object[]{Item.ITEM_ID_CAPTURE, Item.ITEM_DISPLAY_NAME_CAPTURE, "", 0, 0});
         }
-        MatrixCursor dummy = new MatrixCursor(PROJECTION);
-        dummy.addRow(new Object[]{Item.ITEM_ID_CAPTURE, Item.ITEM_DISPLAY_NAME_CAPTURE, "", 0, 0});
-        return new MergeCursor(new Cursor[]{dummy, result});
+
+        if (mEnableInvitePhotoDraft) {
+            if (dummy == null) {
+                dummy = new MatrixCursor(PROJECTION);
+            }
+
+            dummy.addRow(new Object[]{Item.ITEM_ID_INVITE_PHOTO_DRAFT, Item.ITEM_DISPLAY_NAME_INVITE_PHOTO_DRAFT, "", 0, 0});
+        }
+
+        if (dummy == null) {
+            return result;
+        } else {
+            return new MergeCursor(new Cursor[]{dummy, result});
+        }
     }
 
     @Override

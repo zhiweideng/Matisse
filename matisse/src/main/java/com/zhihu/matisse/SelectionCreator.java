@@ -203,6 +203,14 @@ public final class SelectionCreator {
     }
 
     /**
+     * 图片邀约入口草稿入口
+     */
+    public SelectionCreator invitePhotoDraft(boolean enable) {
+        mSelectionSpec.invitePhotoDraft = enable;
+        return this;
+    }
+
+    /**
      * Show a original photo check options.Let users decide whether use original photo after select
      *
      * @param enable Whether to enable original photo or not

@@ -41,6 +41,8 @@ public class Item implements Parcelable {
     };
     public static final long ITEM_ID_CAPTURE = -1;
     public static final String ITEM_DISPLAY_NAME_CAPTURE = "Capture";
+    public static final long ITEM_ID_INVITE_PHOTO_DRAFT = -2;
+    public static final String ITEM_DISPLAY_NAME_INVITE_PHOTO_DRAFT = "InvitePhotoDraft";
     public final long id;
     public final String mimeType;
     public final Uri uri;
@@ -99,6 +101,10 @@ public class Item implements Parcelable {
 
     public boolean isCapture() {
         return id == ITEM_ID_CAPTURE;
+    }
+
+    public boolean isInvitePhotoDraft() {
+        return id == ITEM_ID_INVITE_PHOTO_DRAFT;
     }
 
     public boolean isImage() {

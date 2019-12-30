@@ -97,6 +97,16 @@ public final class Matisse {
     }
 
     /**
+     * 返回 时候点击图片邀约上传
+     *
+     * @param data
+     * @return
+     */
+    public static boolean obtainInvitePhotoDraftResult(Intent data) {
+        return data.getBooleanExtra(MatisseActivity.RESULT_INVITE_PHOTO_DRAFT, false);
+    }
+
+    /**
      * Obtain state whether user decide to use selected media in original
      *
      * @param data Intent passed by {@link Activity#onActivityResult(int, int, Intent)} or

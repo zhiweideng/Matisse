@@ -24,6 +24,7 @@
     <string name="button_apply">Apply(%1$d)</string>
     <string name="button_back">Back</string>
     <string name="photo_grid_capture">Camera</string>
+    <string name="invite_photo_draft">图库邀约上传</string>
     <string name="empty_text">No media yet</string>
     <string name="button_ok">OK</string>
 
