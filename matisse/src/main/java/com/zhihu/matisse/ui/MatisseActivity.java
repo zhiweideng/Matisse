@@ -56,6 +56,7 @@ import com.zhihu.matisse.internal.ui.widget.IncapableDialog;
 import com.zhihu.matisse.internal.utils.MediaStoreCompat;
 import com.zhihu.matisse.internal.utils.PathUtils;
 import com.zhihu.matisse.internal.utils.PhotoMetadataUtils;
+import com.zhihu.matisse.listener.OnApplyCallback;
 
 import java.util.ArrayList;
 
@@ -168,6 +169,7 @@ public class MatisseActivity extends AppCompatActivity implements
         mAlbumCollection.onDestroy();
         mSpec.onCheckedListener = null;
         mSpec.onSelectedListener = null;
+        mSpec.onApplyListener = null;
     }
 
     @Override
@@ -310,14 +312,17 @@ public class MatisseActivity extends AppCompatActivity implements
             intent.putExtra(BasePreviewActivity.EXTRA_RESULT_ORIGINAL_ENABLE, mOriginalEnable);
             startActivityForResult(intent, REQUEST_CODE_PREVIEW);
         } else if (v.getId() == R.id.button_apply) {
-            Intent result = new Intent();
-            ArrayList<Uri> selectedUris = (ArrayList<Uri>) mSelectedCollection.asListOfUri();
-            result.putParcelableArrayListExtra(EXTRA_RESULT_SELECTION, selectedUris);
-            ArrayList<String> selectedPaths = (ArrayList<String>) mSelectedCollection.asListOfString();
-            result.putStringArrayListExtra(EXTRA_RESULT_SELECTION_PATH, selectedPaths);
-            result.putExtra(EXTRA_RESULT_ORIGINAL_ENABLE, mOriginalEnable);
-            setResult(RESULT_OK, result);
-            finish();
+            if (mSpec.onApplyListener == null) {
+                applySelection();
+            } else {
+                mSpec.onApplyListener.onApplyListener(mSelectedCollection.asListOfString(),
+                        new OnApplyCallback() {
+                    @Override
+                    public void onApplySuccess() {
+                        applySelection();
+                    }
+                });
+            }
         } else if (v.getId() == R.id.originalLayout) {
             int count = countOverMaxSize();
             if (count > 0) {
@@ -335,6 +340,17 @@ public class MatisseActivity extends AppCompatActivity implements
                 mSpec.onCheckedListener.onCheck(mOriginalEnable);
             }
         }
+    }
+
+    private void applySelection() {
+        Intent result = new Intent();
+        ArrayList<Uri> selectedUris = (ArrayList<Uri>) mSelectedCollection.asListOfUri();
+        result.putParcelableArrayListExtra(EXTRA_RESULT_SELECTION, selectedUris);
+        ArrayList<String> selectedPaths = (ArrayList<String>) mSelectedCollection.asListOfString();
+        result.putStringArrayListExtra(EXTRA_RESULT_SELECTION_PATH, selectedPaths);
+        result.putExtra(EXTRA_RESULT_ORIGINAL_ENABLE, mOriginalEnable);
+        setResult(RESULT_OK, result);
+        finish();
     }
 
     @Override

@@ -30,6 +30,7 @@ import com.zhihu.matisse.engine.ImageEngine;
 import com.zhihu.matisse.filter.Filter;
 import com.zhihu.matisse.internal.entity.CaptureStrategy;
 import com.zhihu.matisse.internal.entity.SelectionSpec;
+import com.zhihu.matisse.listener.OnApplyListener;
 import com.zhihu.matisse.listener.OnCheckedListener;
 import com.zhihu.matisse.listener.OnSelectedListener;
 import com.zhihu.matisse.ui.MatisseActivity;
@@ -348,6 +349,19 @@ public final class SelectionCreator {
      */
     public SelectionCreator setOnCheckedListener(@Nullable OnCheckedListener listener) {
         mSelectionSpec.onCheckedListener = listener;
+        return this;
+    }
+
+    /**
+     * Set listener for callback immediately when user apply selection.
+     * we only suggest you to use this API when you need to do something immediately.
+     *
+     * @param listener {@link OnApplyListener}
+     * @return {@link SelectionCreator} for fluent API.
+     */
+    @NonNull
+    public SelectionCreator setOnApplyListener(@Nullable OnApplyListener listener) {
+        mSelectionSpec.onApplyListener = listener;
         return this;
     }
 
